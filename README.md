@@ -74,6 +74,14 @@ LangGraphの`StateGraph`を使用した、グラフベースのエージェン�
 npm run graph
 ```
 
+### graph-trace.ts - StateGraphエージェント（トレース付き）
+
+`graph.ts`にLangfuseトレース機能を追加したバージョン。StateGraphの実行をLangfuseで可視化できます。
+
+```bash
+npm run graph-trace
+```
+
 ### functional.ts - 関数型エージェント
 
 `task`と`entrypoint`を使った関数型アプローチのエージェント。`graph.ts`と同じ機能ですが、実装方法が異なります。
@@ -86,6 +94,63 @@ npm run graph
 ```bash
 npm run functional
 ```
+
+### functional-trace.ts - Langfuseトレース付きエージェント
+
+`functional.ts`にLangfuseトレース機能を追加したバージョン。エージェントの実行をLangfuseで可視化できます。
+
+**特徴：**
+- Langfuseによる完全なトレース
+- LLM呼び出し、ツール実行の記録
+- パフォーマンス分析
+- コスト追跡
+
+```bash
+npm run functional-trace
+```
+
+実行後、http://localhost:3000 でトレースを確認できます。
+
+## 📊 Langfuseトレース機能
+
+Langfuseは、LLMアプリケーションのobservabilityプラットフォームです。
+
+### Langfuseのセットアップ
+
+1. **Langfuseを起動**
+
+```bash
+docker-compose up -d
+```
+
+2. **Langfuseにアクセス** - http://localhost:3000
+
+3. **プロジェクトを作成して、API Keyを取得**
+   - Settings → API Keys
+   - Public KeyとSecret Keyをコピー
+
+4. **環境変数を設定**
+
+`.env`ファイルに以下を追加：
+
+```env
+LANGFUSE_PUBLIC_KEY=pk-lf-xxxxx
+LANGFUSE_SECRET_KEY=sk-lf-xxxxx
+LANGFUSE_HOST=http://localhost:3000
+```
+
+5. **トレース付きエージェントを実行**
+
+```bash
+npm run functional-trace  # または npm run graph-trace
+```
+
+### Langfuseで確認できる情報
+
+- **トレース** - エージェントの実行フロー全体
+- **スパン** - 各LLM呼び出し、ツール実行の詳細
+- **メトリクス** - レイテンシ、トークン数、コスト
+- **プロンプト** - 送信されたプロンプトと応答
 
 ## 🔍 デバッグ機能
 
