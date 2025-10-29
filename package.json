@@ -2,11 +2,12 @@
   "name": "lang-sandbox",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/langchain.js",
+  "main": "dist/basic.js",
   "scripts": {
-    "chain": "tsx langchain.ts",
+    "basic": "tsx basic.ts",
+    "real": "tsx real-world.ts",
     "build": "tsc",
-    "start": "node dist/langchain.js",
+    "start": "node dist/basic.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,6 +24,7 @@
   "description": "",
   "dependencies": {
     "@langchain/core": "^1.0.2",
+    "@langchain/langgraph": "^1.0.0",
     "@langchain/openai": "^1.0.0",
     "dotenv": "^16.3.1",
     "langchain": "^1.0.2",
