@@ -6,6 +6,8 @@
   "scripts": {
     "basic": "tsx basic.ts",
     "real": "tsx real-world.ts",
+    "hello": "tsx hello-world.ts",
+    "graph": "tsx graph.ts",
     "build": "tsc",
     "start": "node dist/basic.js",
     "test": "echo \"Error: no test specified\" && exit 1"
