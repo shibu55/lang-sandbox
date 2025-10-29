@@ -1,0 +1,36 @@
+{
+  "name": "lang-sandbox",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shibu55/lang-sandbox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shibu55/lang-sandbox/issues"
+  },
+  "homepage": "https://github.com/shibu55/lang-sandbox#readme",
+  "description": "",
+  "dependencies": {
+    "@langchain/core": "^1.0.2",
+    "@langchain/openai": "^1.0.0",
+    "dotenv": "^16.3.1",
+    "langchain": "^1.0.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
