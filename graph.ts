@@ -52,19 +52,28 @@ const modelWithTools = model.bindTools(tools);
 // Step 2: Define state
 
 import { StateGraph, START, END, MessagesAnnotation } from "@langchain/langgraph";
-import { type BaseMessage } from "@langchain/core/messages";
 
 // Step 3: Define model node
 
 import { SystemMessage } from "@langchain/core/messages";
 async function llmCall(state: typeof MessagesAnnotation.State) {
+  const messagesToSend = [
+    new SystemMessage(
+      "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
+    ),
+    ...state.messages,
+  ];
+
+  // プロンプトを出力
+  console.log("\n━━━ LLMに送信するメッセージ ━━━");
+  messagesToSend.forEach((msg, i) => {
+    const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+    console.log(`[${i + 1}] ${msg._getType()}: ${content}`);
+  });
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━\n");
+
   return {
-    messages: [await modelWithTools.invoke([
-      new SystemMessage(
-        "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
-      ),
-      ...state.messages,
-    ])],
+    messages: [await modelWithTools.invoke(messagesToSend)],
   };
 }
 
@@ -79,10 +88,15 @@ async function toolNode(state: typeof MessagesAnnotation.State) {
   }
 
   const aiMessage = lastMessage as AIMessage;
+
+  console.log(`\n📍 ${aiMessage.tool_calls?.length || 0}個のツールを実行中...\n`);
+
   const result: ToolMessage[] = [];
   for (const toolCall of aiMessage.tool_calls ?? []) {
+    console.log(`🔧 ツール呼び出し: ${toolCall.name}(${JSON.stringify(toolCall.args)})`);
     const tool = toolsByName[toolCall.name];
     const observation = await tool.invoke(toolCall);
+    console.log(`✓ ツール結果: ${observation.content}\n`);
     result.push(observation);
   }
 
@@ -98,10 +112,12 @@ async function shouldContinue(state: typeof MessagesAnnotation.State) {
   const aiMessage = lastMessage as AIMessage;
   // If the LLM makes a tool call, then perform an action
   if (aiMessage.tool_calls?.length) {
+    console.log(`➡️  次のノード: toolNode`);
     return "toolNode";
   }
 
   // Otherwise, we stop (reply to the user)
+  console.log("✅ ツール呼び出しなし - エージェント終了\n");
   return END;
 }
 
@@ -117,12 +133,24 @@ const agent = new StateGraph(MessagesAnnotation)
 
 // Invoke
 import { HumanMessage } from "@langchain/core/messages";
+
+console.log("\n🤖 グラフエージェント開始\n");
+
 const result = await agent.invoke({
   messages: [new HumanMessage("Add 3 and 4.")],
 });
 
-console.log("\nResults:");
+console.log("\n━━━ 最終結果 ━━━");
 for (const message of result.messages) {
   const content = typeof message.content === 'string' ? message.content : JSON.stringify(message.content);
   console.log(`[${message._getType()}]: ${content}`);
+
+  // AIメッセージの場合、tool_callsがあれば表示
+  if (message._getType() === "ai") {
+    const aiMsg = message as AIMessage;
+    if (aiMsg.tool_calls && aiMsg.tool_calls.length > 0) {
+      console.log(`  └─ tool_calls: ${aiMsg.tool_calls.map(tc => `${tc.name}(${JSON.stringify(tc.args)})`).join(', ')}`);
+    }
+  }
 }
+console.log("━━━━━━━━━━━━━━━━\n");
