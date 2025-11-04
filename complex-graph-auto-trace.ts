@@ -130,12 +130,28 @@ const calculate = tool(
 );
 
 const toolsByName = {
-  [analyzeData.name]: analyzeData,
-  [processText.name]: processText,
-  [calculate.name]: calculate,
-};
+  analyzeData,
+  processText,
+  calculate,
+} as const;
+
 const tools = Object.values(toolsByName);
 const modelWithTools = model.bindTools(tools);
+
+// ツール呼び出しヘルパー関数
+// argsはLangChainから動的に渡されるため、Record<string, unknown>を使用
+async function invokeTool(toolName: string, args: Record<string, unknown>): Promise<string> {
+  switch (toolName) {
+    case "analyzeData":
+      return String(await analyzeData.invoke(args as { data: number[] }));
+    case "processText":
+      return String(await processText.invoke(args as { text: string; operation: "uppercase" | "lowercase" | "reverse" | "length" }));
+    case "calculate":
+      return String(await calculate.invoke(args as { expression: string }));
+    default:
+      throw new Error(`Unknown tool: ${toolName}`);
+  }
+}
 
 // ========================================
 // グラフのノード定義（シンプル版 - Langfuseが自動トレース）
@@ -195,10 +211,9 @@ async function processMathNode(state: typeof GraphState.State) {
     trace(`🔧 ${response.tool_calls.length} 個のツール呼び出し`);
     for (const toolCall of response.tool_calls) {
       trace(`  → ${toolCall.name}`, toolCall.args);
-      const tool = toolsByName[toolCall.name];
-      const result = await tool.invoke(toolCall);
-      trace(`  ← Result`, result.content);
-      responseText = String(result.content);
+      const result = await invokeTool(toolCall.name, toolCall.args);
+      trace(`  ← Result`, result);
+      responseText = result;
     }
   }
 
@@ -230,10 +245,9 @@ async function processTextNode(state: typeof GraphState.State) {
     trace(`🔧 ${response.tool_calls.length} 個のツール呼び出し`);
     for (const toolCall of response.tool_calls) {
       trace(`  → ${toolCall.name}`, toolCall.args);
-      const tool = toolsByName[toolCall.name];
-      const result = await tool.invoke(toolCall);
-      trace(`  ← Result`, result.content);
-      responseText = String(result.content);
+      const result = await invokeTool(toolCall.name, toolCall.args);
+      trace(`  ← Result`, result);
+      responseText = result;
     }
   }
 
@@ -265,10 +279,9 @@ async function processDataNode(state: typeof GraphState.State) {
     trace(`🔧 ${response.tool_calls.length} 個のツール呼び出し`);
     for (const toolCall of response.tool_calls) {
       trace(`  → ${toolCall.name}`, toolCall.args);
-      const tool = toolsByName[toolCall.name];
-      const result = await tool.invoke(toolCall);
-      trace(`  ← Result`, result.content);
-      responseText = String(result.content);
+      const result = await invokeTool(toolCall.name, toolCall.args);
+      trace(`  ← Result`, result);
+      responseText = result;
     }
   }
 
@@ -420,7 +433,7 @@ async function runComplexGraph(input: string, sessionId?: string) {
   );
 
   // トレースIDを取得
-  const traceId = langfuseHandler.trace?.id;
+  const traceId = langfuseHandler.traceId;
 
   traceExit("complexAgent", { path: result.path, traceId });
   console.log("\n╔════════════════════════════════════════════════════════════╗");
