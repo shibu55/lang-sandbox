@@ -2,7 +2,23 @@
 
 このファイルには、各ファイルで定義されているStateGraphのmermaid図が含まれています。
 
-## 1. devin-mcp-graph.ts - DeepWiki MCP リポジトリドキュメント分析グラフ
+## 1. src/graph/hello-world.ts - 最もシンプルなグラフ
+
+LangGraphの最も基本的な例です。モックLLMノードが1つだけあるシンプルな構造です。
+
+```mermaid
+graph TD
+    START([START]) --> mock_llm[mock_llm]
+    mock_llm --> END([END])
+```
+
+**主な機能:**
+- モックLLMノード（"hello world"を返す）
+- 最小限の構成でStateGraphの基本を示す
+
+---
+
+## 2. src/graph/devin-mcp-graph.ts - DeepWiki MCP リポジトリドキュメント分析グラフ
 
 DeepWiki MCPサーバーと連携して、GitHubリポジトリのドキュメントを分析するグラフです。
 
@@ -29,7 +45,7 @@ graph TD
 
 ---
 
-## 2. graph.ts - シンプルなツール呼び出しエージェント
+## 3. src/graph/graph.ts - シンプルなツール呼び出しエージェント
 
 LLMがツール（add, multiply, divide）を使って算術処理を行うシンプルなエージェントです。
 
@@ -49,7 +65,7 @@ graph TD
 
 ---
 
-## 3. graph-trace.ts - Langfuse トレース付きエージェント
+## 4. src/graph/graph-trace.ts - Langfuse トレース付きエージェント
 
 graph.tsにLangfuseトレース機能を追加したバージョンです。グラフ構造は同じです。
 
@@ -69,7 +85,7 @@ graph TD
 
 ---
 
-## 4. complex-graph-auto-trace.ts - 複雑な条件分岐グラフ
+## 5. src/graph/complex-graph-auto-trace.ts - 複雑な条件分岐グラフ
 
 入力を分類し、カテゴリに応じて異なる処理パスを選択する複雑なグラフです。
 
@@ -104,7 +120,8 @@ graph TD
 
 | ファイル | ノード数 | 条件分岐 | ツール | トレース |
 |---------|---------|----------|--------|----------|
-| devin-mcp-graph.ts | 5 | 2 | MCP (DeepWiki) | Langfuse |
-| graph.ts | 2 | 1 | add, multiply, divide | なし |
-| graph-trace.ts | 2 | 1 | add, multiply, divide | Langfuse |
-| complex-graph-auto-trace.ts | 6 | 1 | calculate, processText, analyzeData | Langfuse |
+| src/graph/hello-world.ts | 1 | 0 | なし | なし |
+| src/graph/devin-mcp-graph.ts | 5 | 2 | MCP (DeepWiki) | Langfuse |
+| src/graph/graph.ts | 2 | 1 | add, multiply, divide | なし |
+| src/graph/graph-trace.ts | 2 | 1 | add, multiply, divide | Langfuse |
+| src/graph/complex-graph-auto-trace.ts | 6 | 1 | calculate, processText, analyzeData | Langfuse |
