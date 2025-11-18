@@ -7,9 +7,16 @@
 LangGraphの最も基本的な例です。モックLLMノードが1つだけあるシンプルな構造です。
 
 ```mermaid
-graph TD
-    START([START]) --> mock_llm[mock_llm]
-    mock_llm --> END([END])
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	mock_llm(mock_llm)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> mock_llm;
+	mock_llm --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;
 ```
 
 **主な機能:**
@@ -23,17 +30,26 @@ graph TD
 DeepWiki MCPサーバーと連携して、GitHubリポジトリのドキュメントを分析するグラフです。
 
 ```mermaid
-graph TD
-    START([START]) --> fetchWikiStructure[fetchWikiStructure]
-    fetchWikiStructure --> checkError{エラー?}
-    checkError -->|continue| fetchWikiContents[fetchWikiContents]
-    checkError -->|end| END([END])
-    fetchWikiContents --> analyzeInsights[analyzeInsights]
-    analyzeInsights --> questionCheck{質問あり?}
-    questionCheck -->|answer| answerQuestion[answerQuestion]
-    questionCheck -->|skip| generateSummary[generateSummary]
-    answerQuestion --> generateSummary
-    generateSummary --> END
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	fetchWikiStructure(fetchWikiStructure)
+	fetchWikiContents(fetchWikiContents)
+	answerQuestion(answerQuestion)
+	analyzeInsights(analyzeInsights)
+	generateSummary(generateSummary)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> fetchWikiStructure;
+	answerQuestion --> generateSummary;
+	fetchWikiContents --> analyzeInsights;
+	generateSummary --> __end__;
+	fetchWikiStructure -. &nbsp;continue&nbsp; .-> fetchWikiContents;
+	fetchWikiStructure -. &nbsp;end&nbsp; .-> __end__;
+	analyzeInsights -. &nbsp;answer&nbsp; .-> answerQuestion;
+	analyzeInsights -. &nbsp;skip&nbsp; .-> generateSummary;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;
 ```
 
 **主な機能:**
@@ -50,12 +66,19 @@ graph TD
 LLMがツール（add, multiply, divide）を使って算術処理を行うシンプルなエージェントです。
 
 ```mermaid
-graph TD
-    START([START]) --> llmCall[llmCall]
-    llmCall --> shouldContinue{ツール呼び出し?}
-    shouldContinue -->|toolNode| toolNode[toolNode]
-    shouldContinue -->|END| END([END])
-    toolNode --> llmCall
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	llmCall(llmCall)
+	toolNode(toolNode)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> llmCall;
+	toolNode --> llmCall;
+	llmCall -.-> toolNode;
+	llmCall -.-> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;
 ```
 
 **主な機能:**
@@ -70,12 +93,19 @@ graph TD
 graph.tsにLangfuseトレース機能を追加したバージョンです。グラフ構造は同じです。
 
 ```mermaid
-graph TD
-    START([START]) --> llmCall[llmCall]
-    llmCall --> shouldContinue{ツール呼び出し?}
-    shouldContinue -->|toolNode| toolNode[toolNode]
-    shouldContinue -->|END| END([END])
-    toolNode --> llmCall
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	llmCall(llmCall)
+	toolNode(toolNode)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> llmCall;
+	toolNode --> llmCall;
+	llmCall -.-> toolNode;
+	llmCall -.-> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;
 ```
 
 **主な機能:**
@@ -90,18 +120,29 @@ graph TD
 入力を分類し、カテゴリに応じて異なる処理パスを選択する複雑なグラフです。
 
 ```mermaid
-graph TD
-    START([START]) --> classifyInput[classifyInput]
-    classifyInput --> routeByCategory{カテゴリ分類}
-    routeByCategory -->|math| processMath[processMath]
-    routeByCategory -->|text| processText[processText]
-    routeByCategory -->|data| processData[processData]
-    routeByCategory -->|unknown| enrichData[enrichData]
-    processMath --> enrichData
-    processText --> enrichData
-    processData --> enrichData
-    enrichData --> summarizeResults[summarizeResults]
-    summarizeResults --> END([END])
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	classifyInput(classifyInput)
+	processMath(processMath)
+	processText(processText)
+	processData(processData)
+	enrichData(enrichData)
+	summarizeResults(summarizeResults)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> classifyInput;
+	enrichData --> summarizeResults;
+	processData --> enrichData;
+	processMath --> enrichData;
+	processText --> enrichData;
+	summarizeResults --> __end__;
+	classifyInput -.-> processMath;
+	classifyInput -.-> processText;
+	classifyInput -.-> processData;
+	classifyInput -.-> enrichData;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;
 ```
 
 **主な機能:**
